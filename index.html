@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shreya Akurathi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0c0c0c;--bg2:#141414;--bg3:#1b1b1b;
+  --border:#242424;--border2:#2e2e2e;
+  --green:#4ade80;--green2:#86efac;--green-dim:#2f6b47;--blue:#93c5fd;
+  --muted:#4a4a4a;--text:#c8c8c8;--text-dim:#717171;--text-bright:#f0f0f0;
+  --mono:"JetBrains Mono",monospace;--sans:"Inter",sans-serif;--serif:"Fraunces",serif;
+  --gutter:2.5rem;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;line-height:1.6;min-height:100vh}
+a{color:inherit;text-decoration:none}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:0 var(--gutter);height:46px;}
+.nav-brand{font-size:12px;color:var(--text-dim);white-space:nowrap;flex-shrink:0}
+.nav-brand strong{color:var(--green);font-weight:500}
+.nav-brand-sub{color:var(--text-dim)}
+.nav-right-group{display:flex;align-items:center;gap:.6rem;min-width:0;align-self:stretch}
+.nav-right{font-size:11px;color:var(--text-dim);display:flex;align-items:center;gap:7px;min-width:0;overflow:hidden}
+.nav-right-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 7px var(--green);display:inline-block;flex-shrink:0}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:10px 6px;background:none;border:none;flex-shrink:0}
+.hamburger span{display:block;width:20px;height:1.5px;background:var(--text-dim);transition:all .25s}
+nav.scrolled .hamburger{display:flex;align-self:stretch;height:46px;padding:0 1.4rem;background:var(--bg2);border-left:1px solid var(--border);justify-content:center}
+.nav-dropdown{display:none;position:absolute;top:46px;right:var(--gutter);width:190px;background:var(--bg2);border:1px solid var(--border);flex-direction:column;z-index:150;box-shadow:0 14px 32px rgba(0,0,0,.5)}
+.nav-dropdown.open{display:flex}
+.nav-dropdown a{font-size:13px;color:var(--text-dim);padding:.75rem 1.1rem;border-bottom:1px solid var(--border);transition:color .15s,background .15s}
+.nav-dropdown a:last-child{border-bottom:none}
+.nav-dropdown a:hover,.nav-dropdown a.active{color:var(--green);background:var(--bg3)}
+
+/* PAGE */
+.page{max-width:800px;margin:0 auto;padding:0 var(--gutter) 7rem}
+
+/* SECTION PROMPT */
+.section-prompt{display:flex;align-items:center;gap:8px;padding:3rem 0 .5rem;font-size:11px;color:var(--text-dim);border-top:1px solid var(--border);margin-top:2.5rem}
+.sp-user{color:var(--green);font-weight:500}
+.sp-path{color:var(--blue)}
+.section-comment{font-size:11px;color:var(--muted);padding:.1rem 0 1rem}
+
+/* TERMINAL WINDOW (standalone, green-phosphor) */
+.term-window{border:1px solid #16321f;background:#040a05;border-radius:6px;overflow:hidden;margin-top:1.5rem;box-shadow:0 0 50px rgba(39,201,63,.05)}
+.term-titlebar{display:flex;align-items:center;gap:.5rem;padding:.55rem .85rem;background:#0b1a0f;border-bottom:1px solid #16321f}
+.term-dot{width:11px;height:11px;border-radius:50%;display:inline-block;flex-shrink:0}
+.term-dot--red{background:#ff5f56}
+.term-dot--yellow{background:#ffbd2e}
+.term-dot--green{background:#27c93f}
+.term-title{font-family:var(--mono);font-size:11px;color:var(--green-dim);margin-left:.4rem}
+.term-body{padding:1.75rem 2rem 2rem}
+.term-cmd{font-size:12px;color:var(--green-dim);margin-bottom:1rem}
+.term-cmd--end{margin-bottom:0;margin-top:1.75rem}
+.term-prompt-user{color:var(--green2);font-weight:500;text-shadow:0 0 8px rgba(134,239,172,.35)}
+.term-prompt-path{color:var(--green)}
+.term-files{display:flex;flex-wrap:wrap;gap:.5rem 1.75rem;margin-bottom:2rem;padding-bottom:1.75rem;border-bottom:1px dashed #16321f}
+.term-file{font-size:12.5px;color:var(--green-dim);transition:color .15s}
+.term-file:hover{color:var(--green2);text-decoration:underline}
+.term-file.active{color:var(--green2);font-weight:500;text-shadow:0 0 8px rgba(134,239,172,.35)}
+.term-info{display:flex;flex-direction:column;gap:.5rem}
+.term-info-row{display:grid;grid-template-columns:60px 1fr;gap:1rem;font-size:12.5px}
+.term-info-key{color:var(--green-dim)}
+.term-info-val{color:#c8f5d4}
+.term-cursor{display:inline-block;width:7px;height:13px;background:var(--green2);vertical-align:middle;animation:term-blink 1s steps(1) infinite;box-shadow:0 0 8px rgba(134,239,172,.6)}
+@keyframes term-blink{50%{opacity:0}}
+
+/* ABOUT */
+.about-card{border:1px solid var(--border);background:var(--bg2)}
+.about-card-header{border-bottom:1px solid var(--border);padding:.55rem 1.25rem;font-size:11px;color:var(--text-dim);display:flex;align-items:center;gap:1rem}
+.about-card-header .filename{color:var(--green);font-weight:500}
+.about-body{padding:2rem 2rem 2.25rem}
+.about-top{display:flex;align-items:flex-start;justify-content:space-between;gap:2rem}
+.about-text{flex:1;min-width:0}
+.about-photo{flex-shrink:0;width:100px;height:100px;border-radius:50%;overflow:hidden;border:1px solid var(--border2);background:var(--bg3)}
+.about-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 50%}
+.about-photo--fallback{display:flex;align-items:center;justify-content:center}
+.about-photo--fallback span{font-family:var(--sans);font-size:28px;font-weight:500;color:var(--green2);letter-spacing:.02em}
+.about-lead{font-family:var(--sans);font-size:20px;font-weight:300;color:var(--text-bright);line-height:1.45;margin-bottom:1.5rem;max-width:600px;letter-spacing:-.01em}
+.about-lead em{font-style:normal;color:var(--green2);font-weight:400}
+.about-bio{font-family:var(--sans);font-size:13.5px;color:var(--text-dim);line-height:1.8;max-width:600px;margin-bottom:1rem}
+.about-bio em{font-style:normal;color:var(--text);font-weight:500}
+.about-status{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:1.75rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+.status-pill{background:var(--bg3);border:1px solid var(--border2);padding:3px 10px;border-radius:2px;font-size:10px;color:var(--green);letter-spacing:.04em}
+
+/* PRODUCT THINKING */
+.case-list{display:flex;flex-direction:column;gap:1px;border:1px solid var(--border);background:var(--border)}
+.case-item{background:var(--bg2);padding:1.5rem 1.5rem;display:flex;flex-direction:column;gap:.85rem;transition:background .15s}
+.case-item:hover{background:var(--bg3)}
+.case-head{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.case-title{font-family:var(--sans);font-size:14.5px;font-weight:500;color:var(--text-bright)}
+.case-tag{font-size:10px;color:var(--green);text-transform:uppercase;letter-spacing:.1em;border:1px solid var(--border2);padding:2px 9px;border-radius:2px;white-space:nowrap;flex-shrink:0}
+.case-row{display:grid;grid-template-columns:88px 1fr;gap:1rem;align-items:baseline}
+.case-label{font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;padding-top:.2rem}
+.case-text{font-family:var(--sans);font-size:13px;color:var(--text-dim);line-height:1.7}
+.case-text em{font-style:normal;color:var(--text);font-weight:500}
+
+/* EXPERIENCE */
+.exp-list{display:flex;flex-direction:column;border:1px solid var(--border)}
+.exp-item{padding:1.4rem 1.5rem;border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr auto;gap:1rem;transition:background .15s}
+.exp-item:last-child{border-bottom:none}
+.exp-item:hover{background:var(--bg2)}
+.exp-role{font-family:var(--sans);font-size:14px;font-weight:500;color:var(--text-bright);margin-bottom:3px}
+.exp-company{font-family:var(--sans);font-size:12px;color:var(--green);margin-bottom:.6rem}
+.exp-desc{font-family:var(--sans);font-size:12.5px;color:var(--text-dim);line-height:1.7;max-width:500px}
+.exp-desc em{font-style:normal;color:var(--text);font-weight:500}
+.exp-meta{text-align:right;flex-shrink:0}
+.exp-date{font-size:10px;color:var(--text-dim);margin-bottom:6px;white-space:nowrap}
+.exp-tags{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.tag{font-size:10px;color:var(--text-dim);border:1px solid var(--border2);padding:1px 8px;border-radius:2px;white-space:nowrap}
+
+/* PROJECTS */
+.projects-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;border:1px solid var(--border);background:var(--border)}
+.proj-card{background:var(--bg2);padding:1.4rem 1.5rem;display:flex;flex-direction:column;gap:.5rem;transition:background .15s}
+.proj-card:hover{background:var(--bg3)}
+.proj-name{font-size:12px;color:var(--text-bright);font-weight:500;display:flex;align-items:center;justify-content:space-between}
+.proj-arrow{color:var(--green);font-size:11px}
+.proj-desc{font-family:var(--sans);font-size:12.5px;color:var(--text-dim);line-height:1.65;flex:1}
+.proj-stack{display:flex;gap:5px;flex-wrap:wrap;margin-top:.25rem}
+
+/* SKILLS */
+.skills-wrap{border:1px solid var(--border)}
+.skill-cat{border-bottom:1px solid var(--border)}
+.skill-cat:last-child{border-bottom:none}
+.skill-cat-label{background:var(--bg2);padding:.55rem 1.25rem;border-bottom:1px solid var(--border);font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.15em}
+.skill-grid{display:grid;grid-template-columns:1fr 1fr 1fr}
+.skill-cell{padding:.8rem 1.25rem;border-right:1px solid var(--border);border-bottom:1px solid var(--border)}
+.skill-grid .skill-cell:nth-child(3n){border-right:none}
+.skill-cell:nth-last-child(-n+3){border-bottom:none}
+.skill-name{font-size:12px;color:var(--text);font-weight:500;margin-bottom:2px}
+.skill-note{font-size:10px;color:var(--text-dim)}
+
+/* CONTACT */
+.contact-wrap{border:1px solid var(--border)}
+.contact-row{display:flex;align-items:center;gap:1.5rem;padding:.9rem 1.5rem;border-bottom:1px solid var(--border);transition:background .15s;cursor:pointer}
+.contact-row:last-child{border-bottom:none}
+.contact-row:hover{background:var(--bg2)}
+.contact-label{font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.1em;width:80px;flex-shrink:0}
+.contact-val{font-size:12px;color:var(--text);transition:color .15s;flex:1;min-width:0;overflow-wrap:break-word}
+.contact-row:hover .contact-val{color:var(--green)}
+.contact-hint{margin-left:auto;font-size:10px;color:var(--muted);flex-shrink:0;padding-left:.5rem}
+.calendly-block{border:1px solid var(--border);border-top:none;background:var(--bg2);padding:1.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap}
+.calendly-title{font-family:var(--sans);font-size:14px;font-weight:500;color:var(--text-bright);margin-bottom:4px}
+.calendly-sub{font-family:var(--sans);font-size:12px;color:var(--text-dim)}
+.calendly-btn{font-family:var(--mono);font-size:11px;background:var(--green);color:#0c0c0c;border:none;padding:9px 20px;border-radius:2px;cursor:pointer;font-weight:500;letter-spacing:.04em;white-space:nowrap;flex-shrink:0;transition:opacity .15s}
+.calendly-btn:hover{opacity:.85}
+
+footer{border-top:1px solid var(--border);padding:1.25rem var(--gutter);max-width:800px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;font-size:11px;color:var(--muted)}
+
+@media(max-width:700px){
+  :root{--gutter:1.25rem}
+  .nav-brand-sub{display:none}
+  .page{padding-bottom:4rem}
+
+  /* terminal */
+  .term-window{margin-top:1rem}
+  .term-titlebar{padding:.6rem .85rem}
+  .term-title{font-size:10px}
+  .term-body{padding:1.35rem 1.25rem 1.75rem}
+  .term-files{gap:.5rem 1.1rem;margin-bottom:1.5rem;padding-bottom:1.35rem}
+
+  /* about */
+  .about-card-header{padding:.5rem 1.1rem}
+  .about-body{padding:1.5rem 1.25rem 1.75rem}
+  .about-top{flex-direction:column-reverse;gap:1.25rem}
+  .about-photo{width:64px;height:64px}
+  .about-photo--fallback span{font-size:20px}
+  .about-lead{font-size:17px;margin-bottom:1.15rem}
+  .about-bio{font-size:13px;line-height:1.7}
+  .about-status{margin-top:1.4rem;padding-top:1.25rem}
+
+  /* section rhythm */
+  .section-prompt{padding:2.25rem 0 .5rem;margin-top:2rem}
+
+  /* product thinking */
+  .case-item{padding:1.25rem 1.25rem;gap:.7rem}
+  .case-row{grid-template-columns:1fr;gap:.3rem}
+  .case-label{padding-top:0}
+  .case-head{gap:.75rem}
+  .case-title{font-size:14px}
+
+  /* experience */
+  .exp-item{grid-template-columns:1fr;gap:.85rem;padding:1.25rem 1.25rem}
+  .exp-meta{text-align:left}
+  .exp-tags{flex-direction:row;flex-wrap:wrap}
+  .exp-desc{max-width:none}
+
+  /* projects */
+  .projects-grid{grid-template-columns:1fr}
+  .proj-card{padding:1.25rem 1.25rem}
+
+  /* skills: reset the 3-column border math for a 2-column grid */
+  .skill-grid{grid-template-columns:1fr 1fr}
+  .skill-cell{padding:.75rem 1rem}
+  .skill-grid .skill-cell:nth-child(3n){border-right:1px solid var(--border)}
+  .skill-grid .skill-cell:nth-child(2n){border-right:none}
+  .skill-cell:nth-last-child(-n+3){border-bottom:1px solid var(--border)}
+  .skill-cell:nth-last-child(-n+2){border-bottom:none}
+
+  /* contact */
+  .contact-row{padding:.85rem 1.1rem;gap:1rem}
+  .contact-label{width:64px}
+  .calendly-block{padding:1.25rem;flex-direction:column;align-items:flex-start;gap:1rem}
+  .calendly-btn{width:100%;text-align:center;padding:11px 20px}
+
+  footer{padding-top:1.1rem;padding-bottom:1.1rem;font-size:10px}
+}
+
+@media(max-width:420px){
+  .nav-brand{font-size:11px}
+  .nav-right{font-size:10px;gap:5px}
+  .nav-right-group{gap:.4rem}
+  .about-lead{font-size:17px}
+  .contact-row{flex-wrap:wrap}
+  .contact-val{flex-basis:100%;order:3}
+  .contact-hint{display:none}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-brand"><strong>shreya akurathi</strong> <span class="nav-brand-sub">~/home</span></span>
+  <div class="nav-right-group">
+    <div class="nav-right"><span class="dot"></span><span class="nav-right-label">open to opportunities</span></div>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="nav-dropdown" id="nav-dropdown">
+  <a href="#about" onclick="closeMenu()" class="active">~/about</a>
+  <a href="#product" onclick="closeMenu()">~/product</a>
+  <a href="#experience" onclick="closeMenu()">~/experience</a>
+  <a href="#projects" onclick="closeMenu()">~/projects</a>
+  <a href="#awards" onclick="closeMenu()">~/awards</a>
+  <a href="#skills" onclick="closeMenu()">~/skills</a>
+  <a href="#contact" onclick="closeMenu()">~/contact</a>
+</div>
+
+<div class="page">
+
+  <!-- TERMINAL (standalone) -->
+  <div class="term-window" id="terminal">
+    <div class="term-titlebar">
+      <span class="term-dot term-dot--red"></span>
+      <span class="term-dot term-dot--yellow"></span>
+      <span class="term-dot term-dot--green"></span>
+      <span class="term-title">shreya@dartmouth: ~/portfolio</span>
+    </div>
+    <div class="term-body">
+      <div class="term-cmd"><span class="term-prompt-user">shreya akurathi</span> <span class="term-prompt-path">~/home</span> % ls</div>
+      <div class="term-files">
+        <a href="#about" class="term-file active">about.md</a>
+        <a href="#awards" class="term-file">awards.md</a>
+        <a href="#contact" class="term-file">contact.md</a>
+        <a href="#experience" class="term-file">experience.md</a>
+        <a href="#product" class="term-file">product.md</a>
+        <a href="#projects" class="term-file">projects.md</a>
+        <a href="#skills" class="term-file">skills.md</a>
+      </div>
+
+      <div class="term-cmd"><span class="term-prompt-user">shreya akurathi</span> <span class="term-prompt-path">~/home</span> % whoami</div>
+      <div class="term-info">
+        <div class="term-info-row"><span class="term-info-key">role</span><span class="term-info-val">MEM Candidate &middot; Dartmouth '28</span></div>
+        <div class="term-info-row"><span class="term-info-key">prev</span><span class="term-info-val">Data Engineer @ BlackRock (Aladdin Data)</span></div>
+        <div class="term-info-row"><span class="term-info-key">focus</span><span class="term-info-val">product &middot; fintech &middot; strategy</span></div>
+        <div class="term-info-row"><span class="term-info-key">status</span><span class="term-info-val">open to PM &middot; TPM &middot; strategy &middot; 2026&ndash;27</span></div>
+      </div>
+
+      <div class="term-cmd term-cmd--end"><span class="term-prompt-user">shreya akurathi</span> <span class="term-prompt-path">~/home</span> % <span class="term-cursor"></span></div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="section-prompt" id="about">
+    <span class="sp-user">shreya akurathi</span>
+    <span class="sp-path">~/home</span>
+    <span class="sp-cmd">% cat about.md</span>
+  </div>
+  <div class="about-card">
+    <div class="about-card-header"><span class="filename">about.md</span></div>
+    <div class="about-body">
+      <div class="about-top">
+        <div class="about-text">
+          <div class="about-lead">I spent two and a half years building financial data infrastructure at <em>BlackRock</em> on Aladdin Data. Somewhere in that enterprise-scale architecture, I caught the product bug.</div>
+          <p class="about-bio">Before that, I majored in <em>Data Science</em> with a minor in <em>Finance &amp; Risk Analytics</em> at MIT Manipal. That's the same lens I bring to product now: technical enough to know what's actually possible, curious enough to keep asking who it's for. I'm an <em>MEM Candidate at Dartmouth</em>, starting this fall, trading uptime metrics for decisions about what actually gets built.</p>
+          <p class="about-bio">Outside of data and product, I'm probably logging a film on Letterboxd, scouting a new spot on Beli, or deep in some long, meandering book about whatever I'm hyperfixating on that month. I want a team where shipping and rethinking aren't treated as opposites.</p>
+          <div class="about-status">
+            <span class="status-pill">&#x25CF; open to PM &middot; TPM &middot; strategy &middot; 2026&ndash;27</span>
+            <span class="status-pill">dartmouth MEM &middot; class of 2028</span>
+          </div>
+        </div>
+        <div class="about-photo"><img src="data:image/jpeg;base64,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" alt="Shreya Akurathi"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCT THINKING -->
+  <div class="section-prompt" id="product">
+    <span class="sp-user">shreya akurathi</span>
+    <span class="sp-path">~/home</span>
+    <span class="sp-cmd">% cat product-thinking.md</span>
+  </div>
+  <div class="section-comment"># how I actually make the call</div>
+  <div class="case-list">
+
+    <div class="case-item">
+      <div class="case-head">
+        <div class="case-title">Building a product, not a hackathon demo</div>
+        <div class="case-tag">strategy</div>
+      </div>
+      <div class="case-row"><span class="case-label">problem</span><span class="case-text">Most hackathon security tools stop at a model that works, treating accuracy as the only metric that matters.</span></div>
+      <div class="case-row"><span class="case-label">the call</span><span class="case-text">We scoped Vigilance Vision around two different customers, <em>homeowners</em> and <em>local law enforcement</em>, each with different needs and different willingness to pay, and built a tiered pricing model around that split instead of chasing accuracy alone.</span></div>
+      <div class="case-row"><span class="case-label">outcome</span><span class="case-text">Won 3rd place at KAVACH, judged as much on the business case as the model behind it.</span></div>
+    </div>
+
+    <div class="case-item">
+      <div class="case-head">
+        <div class="case-title">Letting users override my assumptions</div>
+        <div class="case-tag">user research</div>
+      </div>
+      <div class="case-row"><span class="case-label">problem</span><span class="case-text">We designed the first version of a navigation device for visually impaired users around the signals we assumed mattered most: obstacles, distance, direction.</span></div>
+      <div class="case-row"><span class="case-label">the call</span><span class="case-text">Talking to the people who'd actually wear it changed the priority list entirely. A hand reaching toward them, or a subtle shift nearby, mattered more than what we'd built for. We rebuilt around what they told us, not what we'd guessed.</span></div>
+      <div class="case-row"><span class="case-label">outcome</span><span class="case-text">Reshaped the model's feature priorities and shipped a working prototype validated with NGOs and the people it was actually for.</span></div>
+    </div>
+
+    <div class="case-item">
+      <div class="case-head">
+        <div class="case-title">The cheap fix wasn't the right fix</div>
+        <div class="case-tag">tradeoffs</div>
+      </div>
+      <div class="case-row"><span class="case-label">problem</span><span class="case-text">A Spark cost-optimization project at BlackRock looked like a pure infrastructure question: cut cluster spend.</span></div>
+      <div class="case-row"><span class="case-label">the call</span><span class="case-text">The lowest-cost technical fix would've helped the infra bill and broken how 20+ downstream datasets were consumed. I chose partition and write-mode changes that took longer to design but didn't force any other team to change how they worked.</span></div>
+      <div class="case-row"><span class="case-label">outcome</span><span class="case-text">Cut cluster utilization 30&ndash;45% without a single downstream team noticing the difference.</span></div>
+    </div>
+
+    <div class="case-item">
+      <div class="case-head">
+        <div class="case-title">The win wasn't the win I planned for</div>
+        <div class="case-tag">ship &amp; learn</div>
+      </div>
+      <div class="case-row"><span class="case-label">problem</span><span class="case-text">When a pipeline failed, analysts lost hours manually tracing logs to find the root cause.</span></div>
+      <div class="case-row"><span class="case-label">the call</span><span class="case-text">At a company hackathon, we built a tool that turned raw failure logs into a plain-language summary instead of a wall of text, then watched how people actually used it after launch instead of assuming the job was done.</span></div>
+      <div class="case-row"><span class="case-label">outcome</span><span class="case-text">The bigger value turned out to be onboarding: the tool got adopted across 4 teams to ramp up new hires, a use case we only found after shipping.</span></div>
+    </div>
+
+  </div>
+
+  <!-- EXPERIENCE -->
+  <div class="section-prompt" id="experience">
+    <span class="sp-user">shreya akurathi</span>
+    <span class="sp-path">~/home</span>
+    <span class="sp-cmd">% cat experience.md</span>
+  </div>
+  <div class="section-comment"># where I've worked</div>
+  <div class="exp-list">
+
+    <div class="exp-item">
+      <div>
+        <div class="exp-role">Data Engineering Analyst</div>
+        <div class="exp-company">BlackRock</div>
+        <div class="exp-desc">
+          &bull; Owned the call to make Snowflake&ndash;data lake migration <em>self-serve and config-driven</em> instead of a one-off script, so any team could move data safely without asking mine first, and reached <em>100% rollout</em> with role-based access built in.<br><br>
+          &bull; Chose a config-driven model over one-off transformation scripts so 3 downstream teams could trust a single lineage view as their <em>source of truth</em> for real-time security events, a call that traded upfront design time for long-term reliability.<br><br>
+          &bull; Business analysts were making risk decisions on data up to two days stale. Identified the bottleneck, built a metadata-driven ingestion framework, and got dashboards to a <em>2-hour refresh</em>, working with analysts to match the fix to how they actually used the data.<br><br>
+          &bull; The cheapest fix for a Spark cost problem would've broken how 20+ datasets were consumed downstream. Weighed cost against usability and chose partition/write-mode changes instead, cutting cluster utilization <em>30&ndash;45%</em> with zero disruption to other teams.<br><br>
+          &bull; Saw the same failure patterns recur across teams instead of treating each as a one-off ticket. Built proactive monitoring and pushed metadata standards that cut infrastructure failures <em>76%</em> across two teams.<br><br>
+          &bull; Recognized that review time, not code quality, was the real bottleneck slowing the team down, so automated the validation checks eating reviewer hours (<em>90% less effort</em>) and built a Splunk-based tracker so failures surfaced in real time, not a day later.
+        </div>
+      </div>
+      <div class="exp-meta">
+        <div class="exp-date">Jul 2024 &ndash; Aug 2026</div>
+        <div class="exp-tags"><span class="tag">Snowflake</span><span class="tag">PySpark</span><span class="tag">Hive</span><span class="tag">Splunk</span><span class="tag">Iceberg</span></div>
+      </div>
+    </div>
+
+    <div class="exp-item">
+      <div>
+        <div class="exp-role">Data Engineering Intern</div>
+        <div class="exp-company">BlackRock</div>
+        <div class="exp-desc">
+          &bull; Reduced system boot-up time by <em>94%</em> (7+ hrs &rarr; &lt;10 mins) by developing a framework to migrate 13K+ scheduled tasks into 4 optimised scheduling cycles, shortening the production lifecycle for client risk analytics by one hour.<br><br>
+          &bull; Increased system reliability by implementing automated monitoring for 15 critical settings with <em>100% error detection accuracy</em>, cutting manual intervention by 80% and production issues by 20% through a scalable, config-driven alert system.<br><br>
+          &bull; Improved model accuracy to <em>97%</em> by building a GPT-4-powered copilot for querying curated datasets, optimising a RAG architecture alongside PyArrow-based automated data loading for 9 datasets.
+        </div>
+      </div>
+      <div class="exp-meta">
+        <div class="exp-date">Jan &ndash; Jun 2024</div>
+        <div class="exp-tags"><span class="tag">RAG / LLMs</span><span class="tag">PyArrow</span><span class="tag">GPT-4</span></div>
+      </div>
+    </div>
+
+    <div class="exp-item">
+      <div>
+        <div class="exp-role">Intern &middot; Deep Learning &amp; Computer Vision</div>
+        <div class="exp-company">Intel Unnati Summer Program</div>
+        <div class="exp-desc">
+          &bull; Optimised YOLOv5 model inference using OpenVINO for real-time video processing, achieving a <em>40% reduction in inference time</em> and 60% improvement in throughput for real-time social distancing detection.<br><br>
+          &bull; Conducted experiments across CPU configurations, achieving <em>70% average accuracy improvement</em> through performance optimisation.
+        </div>
+      </div>
+      <div class="exp-meta">
+        <div class="exp-date">May &ndash; Jul 2023</div>
+        <div class="exp-tags"><span class="tag">Computer Vision</span><span class="tag">YOLOv5</span><span class="tag">OpenVINO</span></div>
+      </div>
+    </div>
+
+    <div class="exp-item">
+      <div>
+        <div class="exp-role">Undergraduate Researcher</div>
+        <div class="exp-company">Dept. of Data Science &amp; Computer Applications, MIT Manipal</div>
+        <div class="exp-desc">
+          &bull; Developed channel attention modules &amp; deep learning models for activity recognition &amp; context-aware navigation for <em>Smart Collared Eye</em>, achieving an <em>80% improvement in prediction accuracy</em>.<br><br>
+          &bull; Presented <em>Knock Knock: Through the Lens of Classification</em> at ICCMEH &apos;23.
+        </div>
+      </div>
+      <div class="exp-meta">
+        <div class="exp-date">Oct 2022 &ndash; Sep 2023</div>
+        <div class="exp-tags"><span class="tag">Research</span><span class="tag">Deep Learning</span><span class="tag">PyTorch</span></div>
+      </div>
+    </div>
+
+    <div class="exp-item">
+      <div>
+        <div class="exp-role">Computational Linguist Intern</div>
+        <div class="exp-company">Navana Tech</div>
+        <div class="exp-desc">
+          &bull; Established baseline performance metrics for data validation by preprocessing <em>2TB+ of audio data</em> using TorchAudio and conducting systematic experiments on the existing speaker verification system.<br><br>
+          &bull; Achieved <em>83% accuracy</em> in multilingual speaker validation and extended the system to Marathi &amp; Kannada, covering five dialects each.
+        </div>
+      </div>
+      <div class="exp-meta">
+        <div class="exp-date">Dec 2022 &ndash; Jan 2023</div>
+        <div class="exp-tags"><span class="tag">NLP</span><span class="tag">TorchAudio</span><span class="tag">Speech</span></div>
+      </div>
+    </div>
+
+    <div class="exp-item">
+      <div>
+        <div class="exp-role">Founder &middot; Research Head</div>
+        <div class="exp-company">The Disruptive Dispatch</div>
+        <div class="exp-desc">
+          &bull; Founded a student-led economics &amp; finance newsletter, building a community of <em>150+ Substack subscribers</em> &amp; 400+ members across Discord &amp; WhatsApp.<br><br>
+          &bull; Authored 10+ essays and led editorial &amp; design initiatives to strengthen reader engagement and brand presence.
+        </div>
+      </div>
+      <div class="exp-meta">
+        <div class="exp-date">Sep 2021 &ndash; Dec 2022</div>
+        <div class="exp-tags"><span class="tag">Product</span><span class="tag">Strategy</span><span class="tag">Writing</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PAST PROJECTS -->
+  <div class="section-prompt" id="projects">
+    <span class="sp-user">shreya akurathi</span>
+    <span class="sp-path">~/home</span>
+    <span class="sp-cmd">% ls projects/</span>
+  </div>
+  <div class="section-comment"># past builds</div>
+  <div class="projects-grid">
+    <div class="proj-card">
+      <div class="proj-name">Vigilance Vision <span class="proj-arrow">&#x2197;</span></div>
+      <div class="proj-desc">Real-time crime detection from CCTV footage, built and pitched as a full product: two customer segments (homeowners, local law enforcement) with a tiered pricing model, not just a ResNet50 classifier at 98% accuracy.</div>
+      <div class="proj-stack"><span class="tag">FastAI</span><span class="tag">OpenCV</span><span class="tag">Go-to-Market</span></div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-name">Hate Speech Detector <span class="proj-arrow">&#x2197;</span></div>
+      <div class="proj-desc">Text classification web app using XGBoost + TF-IDF. 93.7% accuracy, F1 of 0.9. Explored interpretability via LIME; benchmarked against BERT and LSTM baselines.</div>
+      <div class="proj-stack"><span class="tag">XGBoost</span><span class="tag">NLP</span><span class="tag">LIME</span></div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-name">Credit Risk Model <span class="proj-arrow">&#x2197;</span></div>
+      <div class="proj-desc">Flask app predicting loan eligibility with CatBoostClassifier at 93% accuracy. End-to-end: data pipeline, model training, and a deployable web interface.</div>
+      <div class="proj-stack"><span class="tag">CatBoost</span><span class="tag">Flask</span><span class="tag">Python</span></div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-name">Smart Collared Eye <span class="proj-arrow">&#x2197;</span></div>
+      <div class="proj-desc">Channel attention deep learning system for indoor activity recognition and context-aware navigation. 80% accuracy improvement. Presented at ICCMEH &apos;23.</div>
+      <div class="proj-stack"><span class="tag">Deep Learning</span><span class="tag">Research</span><span class="tag">PyTorch</span></div>
+    </div>
+  </div>
+
+  <!-- AWARDS -->
+  <div class="section-prompt" id="awards">
+    <span class="sp-user">shreya akurathi</span>
+    <span class="sp-path">~/home</span>
+    <span class="sp-cmd">% cat awards.md</span>
+  </div>
+  <div class="section-comment"># recognition along the way</div>
+  <div class="exp-list">
+
+    <div class="exp-item">
+      <div>
+        <div class="exp-role">Patent Pending</div>
+        <div class="exp-company">Indian Patent Office</div>
+        <div class="exp-desc">System for integrating big data storage with quantum-safe encryption technologies, and method thereof, filed 2023.</div>
+      </div>
+      <div class="exp-meta">
+        <div class="exp-date">2023</div>
+        <div class="exp-tags"><span class="tag">Patent</span><span class="tag">Encryption</span></div>
+      </div>
+    </div>
+
+    <div class="exp-item">
+      <div>
+        <div class="exp-role">3rd Place &middot; KAVACH Cybersecurity Hackathon</div>
+        <div class="exp-company">Government of India</div>
+        <div class="exp-desc">Won for Vigilance Vision, judged on more than the model. Pitched with a full go-to-market: tiered pricing across two customer segments, homeowners and local law enforcement.</div>
+      </div>
+      <div class="exp-meta">
+        <div class="exp-date">2023</div>
+        <div class="exp-tags"><span class="tag">Hackathon</span><span class="tag">Security</span></div>
+      </div>
+    </div>
+
+    <div class="exp-item">
+      <div>
+        <div class="exp-role">Top 30 of 700+ Teams &middot; TS NASSCOM Hackathon</div>
+        <div class="exp-company">NASSCOM, India-wide</div>
+        <div class="exp-desc">Placed in the top 30 teams nationwide out of 700+ competing teams in an India-wide hackathon run by NASSCOM.</div>
+      </div>
+      <div class="exp-meta">
+        <div class="exp-date">2023</div>
+        <div class="exp-tags"><span class="tag">Hackathon</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SKILLS -->
+  <div class="section-prompt" id="skills">
+    <span class="sp-user">shreya akurathi</span>
+    <span class="sp-path">~/home</span>
+    <span class="sp-cmd">% cat skills.md</span>
+  </div>
+  <div class="section-comment"># what I bring</div>
+  <div class="skills-wrap">
+    <div class="skill-cat">
+      <div class="skill-cat-label">Product &amp; Strategy</div>
+      <div class="skill-grid">
+        <div class="skill-cell"><div class="skill-name">Product Thinking</div><div class="skill-note">user-first, metric-driven</div></div>
+        <div class="skill-cell"><div class="skill-name">Roadmapping</div><div class="skill-note">prioritisation, PRDs</div></div>
+        <div class="skill-cell"><div class="skill-name">Data Storytelling</div><div class="skill-note">Tableau, Power BI</div></div>
+        <div class="skill-cell"><div class="skill-name">Financial Analysis</div><div class="skill-note">econometrics, risk</div></div>
+        <div class="skill-cell"><div class="skill-name">Stakeholder Comms</div><div class="skill-note">cross-team, exec-level</div></div>
+        <div class="skill-cell"><div class="skill-name">Community Building</div><div class="skill-note">newsletter, 400+ members</div></div>
+      </div>
+    </div>
+    <div class="skill-cat">
+      <div class="skill-cat-label">Technical</div>
+      <div class="skill-grid">
+        <div class="skill-cell"><div class="skill-name">Python &middot; SQL</div><div class="skill-note">primary stack</div></div>
+        <div class="skill-cell"><div class="skill-name">Spark &middot; Snowflake</div><div class="skill-note">large-scale pipelines</div></div>
+        <div class="skill-cell"><div class="skill-name">ML &middot; Deep Learning</div><div class="skill-note">PyTorch, XGBoost, RAG</div></div>
+        <div class="skill-cell"><div class="skill-name">Go &middot; Perl &middot; R</div><div class="skill-note">scripting, tooling</div></div>
+        <div class="skill-cell"><div class="skill-name">Kafka &middot; Hive &middot; Flink</div><div class="skill-note">streaming, data lake</div></div>
+        <div class="skill-cell"><div class="skill-name">Splunk &middot; CI/CD</div><div class="skill-note">monitoring, automation</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="section-prompt" id="contact">
+    <span class="sp-user">shreya akurathi</span>
+    <span class="sp-path">~/home</span>
+    <span class="sp-cmd">% cat contact.md</span>
+  </div>
+  <div class="section-comment"># let's talk</div>
+  <div class="contact-wrap">
+    <div class="contact-row" onclick="window.open('https://linkedin.com/in/shreyaakurathi','_blank')">
+      <span class="contact-label">linkedin</span>
+      <span class="contact-val">&#x2197; linkedin.com/in/shreyaakurathi</span>
+      <span class="contact-hint">&rarr;</span>
+    </div>
+    <div class="contact-row" onclick="window.open('mailto:sakurath.office@gmail.com')">
+      <span class="contact-label">email</span>
+      <span class="contact-val">&#x2197; sakurath.office@gmail.com</span>
+      <span class="contact-hint">&rarr;</span>
+    </div>
+    <div class="contact-row" onclick="window.open('https://github.com/shreyaakurathi','_blank')">
+      <span class="contact-label">github</span>
+      <span class="contact-val">&#x2197; github.com/shreyaakurathi</span>
+      <span class="contact-hint">&rarr;</span>
+    </div>
+    <div class="contact-row" onclick="window.open('https://shreyaakurathi.github.io/shreyaakurathiport/Resume_SHREYA.pdf','_blank')">
+      <span class="contact-label">r&eacute;sum&eacute;</span>
+      <span class="contact-val">&#x2197; download PDF</span>
+      <span class="contact-hint">&rarr;</span>
+    </div>
+  </div>
+  <div class="calendly-block">
+    <div>
+      <div class="calendly-title">Schedule a meeting</div>
+      <div class="calendly-sub">30 minutes &middot; pick a time that works for you</div>
+    </div>
+    <button class="calendly-btn" onclick="window.open('https://calendly.com/sakurath-office/30min','_blank')">book a call &#x2197;</button>
+  </div>
+
+</div>
+
+<footer>
+  <div style="display:flex;align-items:center;gap:7px">
+    <span class="dot" style="width:6px;height:6px"></span>
+    shreya akurathi &middot; dartmouth MEM &apos;28
+  </div>
+  <div id="clock"></div>
+</footer>
+
+<script>
+function pad(n){return String(n).padStart(2,"0")}
+function tick(){var n=new Date();document.getElementById("clock").textContent=pad(n.getUTCHours())+":"+pad(n.getUTCMinutes())+" UTC"}
+tick();setInterval(tick,1000);
+
+var hamburger=document.getElementById("hamburger");
+var navDropdown=document.getElementById("nav-dropdown");
+hamburger.addEventListener("click",function(e){
+  e.stopPropagation();
+  navDropdown.classList.toggle("open");
+  var spans=hamburger.querySelectorAll("span");
+  if(navDropdown.classList.contains("open")){
+    spans[0].style.transform="rotate(45deg) translate(4px,4px)";
+    spans[1].style.opacity="0";
+    spans[2].style.transform="rotate(-45deg) translate(4px,-4px)";
+  } else {
+    spans[0].style.transform="";spans[1].style.opacity="";spans[2].style.transform="";
+  }
+});
+function closeMenu(){
+  navDropdown.classList.remove("open");
+  var spans=hamburger.querySelectorAll("span");
+  spans[0].style.transform="";spans[1].style.opacity="";spans[2].style.transform="";
+}
+document.addEventListener("click",function(e){
+  if(navDropdown.classList.contains("open") && !navDropdown.contains(e.target) && !hamburger.contains(e.target)){
+    closeMenu();
+  }
+});
+
+var navEl=document.querySelector("nav");
+var termWindow=document.getElementById("terminal");
+function updateNavScroll(){
+  var pastHero=termWindow.getBoundingClientRect().bottom < 46;
+  if(pastHero){
+    navEl.classList.add("scrolled");
+  } else {
+    navEl.classList.remove("scrolled");
+    closeMenu();
+  }
+}
+window.addEventListener("scroll",updateNavScroll,{passive:true});
+updateNavScroll();
+
+var links=document.querySelectorAll("#nav-dropdown a, .term-file");
+var obs=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){
+      links.forEach(function(l){l.classList.remove("active")});
+      document.querySelectorAll("a[href='#"+e.target.id+"']").forEach(function(a){
+        if(a.matches("#nav-dropdown a, .term-file")) a.classList.add("active");
+      });
+    }
+  });
+},{rootMargin:"-25% 0px -65% 0px"});
+["about","product","experience","projects","awards","skills","contact"].forEach(function(id){
+  var el=document.getElementById(id);if(el)obs.observe(el);
+});
+</script>
+</body>
+</html>
